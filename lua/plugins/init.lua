@@ -13,6 +13,22 @@ return {
     end,
   },
 
+  {
+    "nvim-tree/nvim-tree.lua",
+    config = function()
+      require("nvim-tree").setup({
+        hijack_directories = { auto_open = true }, 
+        git = {
+          enable = true,
+          ignore = false, -- show git ignored files
+        },
+        filters = {
+          dotfiles = false, -- optional: show dotfiles too
+        },
+      })
+    end,
+  },
+
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
 
