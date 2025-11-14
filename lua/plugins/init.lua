@@ -18,6 +18,9 @@ return {
     config = function()
       require("nvim-tree").setup({
         hijack_directories = { auto_open = true }, 
+        view = {
+          side = "right"
+        },
         git = {
           enable = true,
           ignore = false, -- show git ignored files
