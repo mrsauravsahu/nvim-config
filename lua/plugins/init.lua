@@ -6,11 +6,40 @@ return {
   },
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
+  {
+    "NvChad/nvterm",
+    config = function()
+      require("nvterm").setup({
+      terminals = {
+        shell = vim.o.shell,
+        list = {},
+        type_opts = {
+          float = {
+            relative = 'editor',
+            row = 0.3,
+            col = 0.25,
+            width = 0.5,
+            height = 0.4,
+            border = "single",
+          },
+          horizontal = { location = "rightbelow", split_ratio = .3, },
+          vertical = { location = "rightbelow", split_ratio = .5 },
+        }
+      },
+      behavior = {
+        autoclose_on_quit = {
+          enabled = false,
+          confirm = true,
+        },
+        close_on_exit = true,
+        auto_insert = true,
+      },
+    })
+    end,
+  },
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -22,7 +51,7 @@ return {
     "nvim-tree/nvim-tree.lua",
     config = function()
       require("nvim-tree").setup({
-        hijack_directories = { auto_open = true }, 
+        hijack_directories = { auto_open = true },
         view = {
           side = "right"
         },
@@ -41,38 +70,38 @@ return {
     lazy = false,
     config = function()
       local conf = {
-        -- default_command_agent = "ChatOllamaLlama3.1-8B",
-        -- default_chat_agent = "ChatOllamaLlama3.1-8B",
-        -- agents = {
-          -- {
-          --   name = "ChatGPT-o3-mini",
-          --   disable=true
-          -- },
-          -- {
-          --   provider = "ollama",
-          --   name = "ChatOllamaLlama3.1-8B",
-          --   chat = true,
-          --   -- string with model name or table with model name and parameters
-          --   model = {
-          --     model = "llama3.1:8b",
-          --     temperature = 0,
-          --     top_p = 1,
-          --     min_p = 0.05,
-          --   },
-          --   -- system prompt (use this to specify the persona/role of the AI)
-          --   system_prompt = "You are a Senior Software Engineer.",
-          -- }
-        -- },
+        default_command_agent = "ChatGPT-o3-mini",
+        default_chat_agent = "ChatGPT-o3-mini",
+        agents = {
+          {
+            name = "ChatGPT-o3-mini",
+            disable=true
+          },
+          {
+            provider = "ollama",
+            name = "ChatOllamaLlama3.1-8B",
+            chat = true,
+            -- string with model name or table with model name and parameters
+            model = {
+              model = "llama3.1:8b",
+              temperature = 0,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = "You are a Senior Software Engineer.",
+          }
+        },
         -- For customization, refer to Install > Configuration in the Documentation/Readme
-        providers = { 
+        providers = {
           ollama = {
             endpoint = "http://localhost:11434/v1/chat/completions",
-            secret ="dummy"
+            secret = "dummy"
           },
           openai = {
-      			endpoint = "https://openai.com/v1/chat/completions",
-		      	secret = os.getenv("OPENAI_API_KEY"),
-		      },
+            endpoint = os.getenv("OPENAI_API_HOST"),
+            secret = os.getenv("OPENAI_API_KEY"),
+          },
         }
       }
       require("gp").setup(conf)
