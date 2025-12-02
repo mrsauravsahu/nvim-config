@@ -70,28 +70,37 @@ return {
     lazy = false,
     config = function()
       local conf = {
-        default_command_agent = "ChatGPT-o3-mini",
-        default_chat_agent = "ChatGPT-o3-mini",
-        agents = {
-          {
-            name = "ChatGPT-o3-mini",
-            disable=true
-          },
-          {
-            provider = "ollama",
-            name = "ChatOllamaLlama3.1-8B",
-            chat = true,
-            -- string with model name or table with model name and parameters
-            model = {
-              model = "llama3.1:8b",
-              temperature = 0,
-              top_p = 1,
-              min_p = 0.05,
-            },
-            -- system prompt (use this to specify the persona/role of the AI)
-            system_prompt = "You are a Senior Software Engineer.",
-          }
+      agents = {
+        {
+          name = "ChatGPT-o3-mini",
+          disable=true
         },
+        {
+          name = "gpt5",
+          model = "gpt-5-nano-2025-08-07",
+          provider = "openai",
+          system_prompt = "You are a Senior Software Engineer.",
+          chat = true,
+          command = true,
+        },
+      },
+        default_command_agent = "gp5",
+        default_chat_agent = "gpt5",
+          -- {
+          --   provider = "ollama",
+          --   name = "ChatOllamaLlama3.1-8B",
+          --   chat = true,
+          --   -- string with model name or table with model name and parameters
+          --   model = {
+          --     model = "llama3.1:8b",
+          --     temperature = 0,
+          --     top_p = 1,
+          --     min_p = 0.05,
+          --   },
+          --   -- system prompt (use this to specify the persona/role of the AI)
+          --   system_prompt = "You are a Senior Software Engineer.",
+          -- }
+        -- },
         -- For customization, refer to Install > Configuration in the Documentation/Readme
         providers = {
           ollama = {
