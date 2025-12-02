@@ -73,7 +73,7 @@ return {
       agents = {
         {
           name = "ChatGPT-o3-mini",
-          disable=true
+          disable = true
         },
         {
           name = "gpt5",
@@ -83,28 +83,28 @@ return {
           chat = true,
           command = true,
         },
+        {
+          provider = "ollama",
+          name = "ollama-qwen",
+          chat = true,
+          -- string with model name or table with model name and parameters
+          model = {
+            model = "qwen2.5-coder:latest",
+            temperature = 0,
+            top_p = 1,
+            min_p = 0.05,
+          },
+          -- system prompt (use this to specify the persona/role of the AI)
+          system_prompt = "You are a Senior Software Engineer.",
+        }
       },
-        default_command_agent = "gp5",
-        default_chat_agent = "gpt5",
-          -- {
-          --   provider = "ollama",
-          --   name = "ChatOllamaLlama3.1-8B",
-          --   chat = true,
-          --   -- string with model name or table with model name and parameters
-          --   model = {
-          --     model = "llama3.1:8b",
-          --     temperature = 0,
-          --     top_p = 1,
-          --     min_p = 0.05,
-          --   },
-          --   -- system prompt (use this to specify the persona/role of the AI)
-          --   system_prompt = "You are a Senior Software Engineer.",
-          -- }
+        default_command_agent = "ollama-qwen",
+        default_chat_agent = "ollama-qwen",
         -- },
         -- For customization, refer to Install > Configuration in the Documentation/Readme
         providers = {
           ollama = {
-            endpoint = "http://localhost:11434/v1/chat/completions",
+            endpoint = "http://localhost:11434/api/chat",
             secret = "dummy"
           },
           openai = {
