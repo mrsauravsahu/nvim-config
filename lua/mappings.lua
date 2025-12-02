@@ -15,4 +15,5 @@ map({"n", "i", "t"}, "<C-p>", "<cmd> Telescope find_files <cr>", { silent = true
 
 map({"n", "i", "t"}, "<C-g><C-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 map({"n", "i", "t"}, "<C-g><C-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "t"}, "<C-g><C-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
