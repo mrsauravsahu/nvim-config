@@ -16,6 +16,14 @@ map({"n", "i", "t"}, "<C-p>", "<cmd> Telescope find_files <cr>", { silent = true
 map({"n", "i", "t"}, "<C-g><C-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 map({"n", "i", "t"}, "<C-g><C-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 map({"n", "i", "t"}, "<C-g><C-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map(
+  {"n", "i", "t"},
+  "<A-j>",
+  function () require("nvterm.terminal").toggle('horizontal') end,
+  { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" }
+)
 
-map({"n", "i", "t"}, "<A-j>", function () require("nvterm.terminal").toggle('horizontal') end , { silent = true, noremap = true, nowait = true, desc = "" })
+-- Unset mappings 
+-- vim.keymap.del({"n", "i", "v"}, "<A-h>")
+-- vim.keymap.del({"n", "i", "v"}, "<A-v>")
 
