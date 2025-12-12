@@ -96,10 +96,24 @@ return {
           },
           -- system prompt (use this to specify the persona/role of the AI)
           system_prompt = "You are a Senior Software Engineer.",
-        }
+          },
+          {
+            provider = "ollama",
+            name = "ollama-llama",
+            chat = true,
+            -- string with model name or table with model name and parameters
+            model = {
+              model = "llama3.1:8b",
+              temperature = 0,
+              top_p = 1,
+              min_p = 0.05,
+            },
+            -- system prompt (use this to specify the persona/role of the AI)
+            system_prompt = "You are a Senior Software Engineer.",
+          }
       },
-        default_command_agent = "ollama-qwen",
-        default_chat_agent = "ollama-qwen",
+        default_command_agent = "ollama-llama",
+        default_chat_agent = "ollama-llama",
         -- },
         -- For customization, refer to Install > Configuration in the Documentation/Readme
         providers = {
