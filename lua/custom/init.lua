@@ -13,6 +13,15 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
+
+vim.api.nvim_create_user_command("TestVT", function()
+  local ns = vim.api.nvim_create_namespace("vt_test")
+  vim.api.nvim_buf_set_extmark(0, ns, 0, 0, {
+    virt_text = {{" Hello VT 🚀", "Comment"}},
+    virt_text_pos = "eol",
+  })
+end, {})
+
 -- require "lsp.init"
 
 -- Enable list mode to show non-printable characters
