@@ -1,6 +1,16 @@
 return {
   {
+    "lewis6991/gitsigns.nvim",
+    lazy = false,
+    config = function()
+      require('gitsigns').setup({
+        current_line_blame = true,
+      })
+    end
+  },
+  {
     "PyDevC/model-cmp.nvim",
+    lazy = false,
     config = function()
       require("model_cmp").setup({
         requests = {
@@ -9,28 +19,25 @@ return {
           timeout_ms = 300000,
         },
         api = {
-          -- apikeys = {
-          --   GEMINI_API_KEY = "<your-key>"
-          -- }
+          apikeys = {
+            GEMINI_API_KEY = ""
+          },
           custom_url = {
             url = "http://127.0.0.1",
-            port = "11434"
+            port = "9000"
           }
         },
-
         virtualtext = {
-          enable = false,
+          enable = true,
           type = "inline",
-
           style = { -- This is just a highlight group
             fg = "#b53a3a",
             italic = false,
             bold = false
           }
-
         },
       })
-      -- vim.keymap.set("i", "<C-s>", "<cmd>ModelCmp capture first<CR>")
+      -- vim.keymap.set("i", "<C-i>", "<cmd>ModelCmp capture first<CR>")
     end,
   },
   {
