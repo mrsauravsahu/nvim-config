@@ -9,8 +9,10 @@ return {
     end
   },
   {
-    "PyDevC/model-cmp.nvim",
+    "mrsauravsahu/model-cmp.nvim",
+    branch = "tmp/local-stuff",
     lazy = false,
+    -- cmd = {"ModelCmp"},
     config = function()
       require("model_cmp").setup({
         requests = {
@@ -37,7 +39,6 @@ return {
           }
         },
       })
-      -- vim.keymap.set("i", "<C-i>", "<cmd>ModelCmp capture first<CR>")
     end,
   },
   {
