@@ -2,6 +2,8 @@
 
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
+    vim.cmd("ModelCmp virtualtext enable")
+
     if vim.fn.argc() == 0 then
       -- require("nvim-tree.api").tree.open()
       -- Move focus back to previous buffer (or empty buffer)
