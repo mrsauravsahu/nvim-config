@@ -28,6 +28,10 @@ map({"n", "i", "v", "t"}, "<C-g><C-a>", "<cmd> GpAppend <cr>", { silent = true, 
 map({"n", "i", "v", "t"}, "<C-g><C-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 -- Map Ctrl + g and I to toggle nvterm chat popup in normal, insert modes
 map({"n", "i", "t"}, "<C-g><C-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+-- Map Ctrl + g and g to tell details about the current GP in normal, insert, visual, and terminal modes
+map({"n", "i", "v", "t"}, "<C-g><C-g>", "<cmd> GpAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+-- Map Ctrl + q to capture first completion in insert mode
+map({"n", "i", "v", "t"}, "<C-g><C-n>", "<cmd> GpNextAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 -- Map Ctrl + q to capture first completion in insert mode
 map({"i"}, "<C-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 -- Toggle nvterm terminal with Alt + j
