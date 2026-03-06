@@ -42,3 +42,14 @@ map(
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" }
 )
 
+-- Toggle nvterm terminal with Alt + j
+map(
+  {"n", "i", "t"},
+  "<C-g><C-c>",
+  function ()
+    local gp = require("gp")
+    vim.api.nvim_command("%" .. gp.config.cmd_prefix .. "ChatNew")
+  end,
+  { silent = true, noremap = false, nowait = true, desc = "Start new GP chat with current file as context" }
+)
+
