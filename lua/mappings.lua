@@ -1,6 +1,7 @@
 require "nvchad.mappings"
 
 local map = vim.keymap.set
+local _99 = require("99")
 
 -- Map semicolon to colon for command mode entry
 map("n", ";", ":", { desc = "CMD enter command mode" })
@@ -53,3 +54,14 @@ map(
   { silent = true, noremap = false, nowait = true, desc = "Start new GP chat with current file as context" }
 )
 
+map("v", "<leader>9v", function()
+  _99.visual()
+end)
+
+map("n", "<leader>9x", function()
+  _99.stop_all_requests()
+end)
+
+map("n", "<leader>9s", function()
+  _99.search()
+end)
