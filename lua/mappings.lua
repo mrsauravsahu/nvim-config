@@ -15,26 +15,43 @@ map({"n", "i", "t"}, "<C-\\>", function()
   vim.cmd("NvimTreeToggle")
 end, { noremap = true, silent = true })
 
+map({"n", "i", "t"}, "<A-\\>", function()
+  vim.cmd("NvimTreeToggle")
+end, { noremap = true, silent = true })
+
 -- Save file
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+
 -- Open Telescope
 map({"n", "i", "t"}, "<C-p>", "<cmd> Telescope find_files <cr>",
   { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
+map({"n", "i", "t"}, "<A-p>", "<cmd> Telescope find_files <cr>",
+  { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
+
 -- Open Telescope with no_ignore=true
 map({"n", "i", "t"}, "<C-o>", "<cmd> Telescope find_files no_ignore=true<cr>",
   { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
+map({"n", "i", "t"}, "<A-o>", "<cmd> Telescope find_files no_ignore=true<cr>",
+  { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
+
 -- Map Ctrl + g and A to append at cursor position in normal, insert, visual, and terminal modes
 map({"n", "i", "v", "t"}, "<C-g><C-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Map Ctrl + g and R to rewrite at cursor position in normal, insert, visual modes
 map({"n", "i", "v", "t"}, "<C-g><C-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Map Ctrl + g and I to toggle nvterm chat popup in normal, insert modes
 map({"n", "i", "t"}, "<C-g><C-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Map Ctrl + g and g to tell details about the current GP in normal, insert, visual, and terminal modes
 map({"n", "i", "v", "t"}, "<C-g><C-g>", "<cmd> GpAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Map Ctrl + q to capture first completion in insert mode
 map({"n", "i", "v", "t"}, "<C-g><C-n>", "<cmd> GpNextAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Map Ctrl + q to capture first completion in insert mode
 map({"i"}, "<C-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
 -- Toggle nvterm terminal with Alt + j
 map(
   {"n", "i", "t"},
@@ -65,3 +82,9 @@ end)
 map("n", "<leader>9s", function()
   _99.search()
 end)
+
+--  opencode
+map({ "v", "i", "n", "t" }, "<C-o><C-o>", function() require("opencode").toggle() end,
+  { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
+
+
