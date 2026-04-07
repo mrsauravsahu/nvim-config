@@ -60,7 +60,14 @@ map(
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" }
 )
 
--- Toggle nvterm terminal with Alt + j
+map(
+  {"n", "i", "t"},
+  "<A-`>",
+  function () require("nvterm.terminal").toggle('horizontal', { focus = true }) end,
+  { silent = true, noremap = true, nowait = true, desc = "Start new GP chat with current file as context" }
+)
+
+-- GP
 map(
   {"n", "i", "t"},
   "<C-g><C-c>",
@@ -86,5 +93,4 @@ end)
 --  opencode
 map({ "v", "i", "n", "t" }, "<C-o><C-o>", function() require("opencode").toggle() end,
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
-
 
