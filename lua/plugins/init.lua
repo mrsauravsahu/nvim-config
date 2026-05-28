@@ -1,5 +1,11 @@
 return {
   {
+      "iamcco/markdown-preview.nvim",
+      cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+      ft = { "markdown" },
+      build = function() vim.fn["mkdp#util#install"]() end,
+  },
+  {
     "lewis6991/gitsigns.nvim",
     lazy = false,
     config = function()
