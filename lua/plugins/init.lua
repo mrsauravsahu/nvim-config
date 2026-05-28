@@ -365,6 +365,18 @@ return {
     opts = {
       suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
       -- log_level = 'debug',
+      pre_restore_cmds = {
+        function()
+          local ok, api = pcall(require, "nvim-tree.api")
+          if ok then api.tree.close() end
+        end,
+      },
+      post_restore_cmds = {
+        function()
+          local ok, api = pcall(require, "nvim-tree.api")
+          if ok then api.tree.open() end
+        end,
+      },
     },
   },
   {

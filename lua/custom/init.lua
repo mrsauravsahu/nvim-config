@@ -1,20 +1,19 @@
 -- Auto open NvimTree when starting Neovim
-
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     vim.cmd("ModelCmp virtualtext enable")
 
-    if vim.fn.argc() == 0 then
-      -- require("nvim-tree.api").tree.open()
-      -- Move focus back to previous buffer (or empty buffer)
-      -- vim.cmd("wincmd p")
-      vim.cmd("set foldlevelstart=99")
-      vim.cmd("set foldmethod=indent")
-
+    local auto_session = require("auto-session")
+    local will_restore = auto_session.session_exists_for_cwd and auto_session.session_exists_for_cwd()
+    if not will_restore then
+      require("nvim-tree.api").tree.open()
     end
+
+    vim.cmd("wincmd p")
+    vim.cmd("set foldlevelstart=99")
+    vim.cmd("set foldmethod=indent")
   end,
 })
-
 
 vim.api.nvim_create_user_command("TestVT", function()
   local ns = vim.api.nvim_create_namespace("vt_test")
@@ -25,7 +24,6 @@ vim.api.nvim_create_user_command("TestVT", function()
 end, {})
 
 -- require "lsp.init"
-
 -- Enable list mode to show non-printable characters
 vim.opt.list = true
 
