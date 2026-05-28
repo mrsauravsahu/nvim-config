@@ -52,19 +52,33 @@ map({"n", "i", "v", "t"}, "<C-g><C-n>", "<cmd> GpNextAgent <cr>", { silent = tru
 -- Map Ctrl + q to capture first completion in insert mode
 map({"i"}, "<C-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
--- Toggle nvterm terminal with Alt + j
+-- Map Ctrl + q to capture first completion in insert mode
+map({"n", "i", "v"}, "<C-m>", "<cmd> MarkdownPreview <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
+-- Toggle half-height horizontal terminal with Alt + h
+map(
+  {"n", "i", "t"},
+  "<A-h>",
+  function () require("nvterm.terminal").toggle "horizontal" end,
+  { silent = true, noremap = true, nowait = true, desc = "Toggle half horizontal terminal" }
+)
+
+-- Toggle full-height horizontal terminal with Alt + j
 map(
   {"n", "i", "t"},
   "<A-j>",
-  function () require("nvterm.terminal").toggle('horizontal', { focus = true }) end,
-  { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" }
+  function ()
+    require("nvterm.terminal").toggle "horizontal"
+    vim.cmd "wincmd _"
+  end,
+  { silent = true, noremap = true, nowait = true, desc = "Toggle full horizontal terminal" }
 )
 
 map(
   {"n", "i", "t"},
   "<A-`>",
-  function () require("nvterm.terminal").toggle('horizontal', { focus = true }) end,
-  { silent = true, noremap = true, nowait = true, desc = "Start new GP chat with current file as context" }
+  function () require("nvterm.terminal").toggle "horizontal" end,
+  { silent = true, noremap = true, nowait = true, desc = "Toggle horizontal terminal" }
 )
 
 -- GP
