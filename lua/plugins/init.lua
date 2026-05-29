@@ -365,6 +365,15 @@ return {
     opts = {
       suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
       -- log_level = 'debug',
+      pre_save_cmds = {
+        function()
+          for _, win in ipairs(vim.api.nvim_list_wins()) do
+            if vim.bo[vim.api.nvim_win_get_buf(win)].buftype == "terminal" then
+              vim.api.nvim_win_close(win, true)
+            end
+          end
+        end,
+      },
       pre_restore_cmds = {
         function()
           local ok, api = pcall(require, "nvim-tree.api")
