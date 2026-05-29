@@ -115,6 +115,34 @@ map(
   { silent = true, noremap = true, nowait = true, desc = "Toggle full horizontal terminal" }
 )
 
+-- A-k: increase terminal height by 5 lines
+map(
+  {"n", "i", "t"},
+  "<A-k>",
+  function ()
+    local win = find_term_win()
+    if win then
+      local height = vim.api.nvim_win_get_height(win)
+      vim.api.nvim_win_set_height(win, height + 5)
+    end
+  end,
+  { silent = true, noremap = true, nowait = true, desc = "Increase terminal height" }
+)
+
+-- A-l: decrease terminal height by 5 lines
+map(
+  {"n", "i", "t"},
+  "<A-l>",
+  function ()
+    local win = find_term_win()
+    if win then
+      local height = vim.api.nvim_win_get_height(win)
+      vim.api.nvim_win_set_height(win, math.max(5, height - 5))
+    end
+  end,
+  { silent = true, noremap = true, nowait = true, desc = "Decrease terminal height" }
+)
+
 map(
   {"n", "i", "t"},
   "<A-`>",
