@@ -82,7 +82,8 @@ map(
       vim.cmd "wincmd ="
       term_size_state = "half"
     elseif term_size_state == "full" or term_looks_full(win) then
-      vim.cmd "wincmd ="
+      local half = math.floor((vim.o.lines - vim.o.cmdheight - 1) * 0.5)
+      vim.api.nvim_win_set_height(win, half)
       term_size_state = "half"
     else
       require("nvterm.terminal").toggle "horizontal"
