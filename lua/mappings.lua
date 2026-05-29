@@ -21,6 +21,7 @@ end, { noremap = true, silent = true })
 
 -- Save file
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+map({ "n", "i", "v" }, "<A-s>", "<cmd> w <cr>")
 
 -- Open Telescope
 map({"n", "i", "t"}, "<C-p>", "<cmd> Telescope find_files <cr>",
