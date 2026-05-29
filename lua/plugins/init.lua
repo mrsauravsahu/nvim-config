@@ -1,56 +1,71 @@
 return {
   {
-      "iamcco/markdown-preview.nvim",
-      cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-      ft = { "markdown" },
-      build = function() vim.fn["mkdp#util#install"]() end,
-  },
-  {
-    "lewis6991/gitsigns.nvim",
+    "tpope/vim-fugitive",
     lazy = false,
-    config = function()
-      require('gitsigns').setup({
-        current_line_blame = true,
-      })
-    end
+    cmd = { "Git", "G", "Gblame", "Gdiffsplit", "Gdelete" },
+    keys = {
+      {
+        "<A-g>",
+        "<cmd>Git<cr>",
+        mode = { "n", "i", "t" },
+        desc = "Launch Git fugitive",
+        silent = true,
+        nowait = true
+      }
+    }
   },
   {
-    "mrsauravsahu/model-cmp.nvim",
-    branch = "tmp/local-stuff",
-    lazy = false,
-    -- cmd = {"ModelCmp"},
-    config = function()
-      require("model_cmp").setup({
-        requests = {
-          delay_ms = 1000,
-          max_retries = 5,
-          timeout_ms = 300000,
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+},
+{
+  "lewis6991/gitsigns.nvim",
+  lazy = false,
+  config = function()
+    require('gitsigns').setup({
+      current_line_blame = true,
+    })
+  end
+},
+{
+  "mrsauravsahu/model-cmp.nvim",
+  branch = "tmp/local-stuff",
+  lazy = false,
+  -- cmd = {"ModelCmp"},
+  config = function()
+    require("model_cmp").setup({
+      requests = {
+        delay_ms = 1000,
+        max_retries = 5,
+        timeout_ms = 300000,
+      },
+      api = {
+        apikeys = {
+          GEMINI_API_KEY = ""
         },
-        api = {
-          apikeys = {
-            GEMINI_API_KEY = ""
-          },
-          custom_url = {
-            url = "http://127.0.0.1",
-            port = "9000"
-          }
-        },
-        virtualtext = {
-          enable = true,
-          type = "inline",
-          style = { -- This is just a highlight group
-            fg = "#b53a3a",
-            italic = false,
-            bold = false
-          }
-        },
-      })
-    end,
-  },
-  {
-    "gregorias/nvim-mapper",
-    dependencies = "nvim-telescope/telescope.nvim",
-    config = function() require"nvim-mapper".setup{} end,
+        custom_url = {
+          url = "http://127.0.0.1",
+          port = "9000"
+        }
+      },
+      virtualtext = {
+        enable = true,
+        type = "inline",
+        style = { -- This is just a highlight group
+          fg = "#b53a3a",
+          italic = false,
+          bold = false
+        }
+      },
+    })
+  end,
+},
+{
+  "gregorias/nvim-mapper",
+  dependencies = "nvim-telescope/telescope.nvim",
+  config = function() require"nvim-mapper".setup{} end,
   },
   {
     "stevearc/conform.nvim",
