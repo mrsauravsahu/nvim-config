@@ -55,21 +55,60 @@ map({"i"}, "<C-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap
 -- Map Ctrl + q to capture first completion in insert mode
 map({"n", "i", "v"}, "<C-m>", "<cmd> MarkdownPreview <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
--- Toggle half-height horizontal terminal with Alt + h
+-- "half" | "full" | nil
+local term_size_state = nil
+
+local function find_term_win()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.bo[vim.api.nvim_win_get_buf(win)].buftype == "terminal" then
+      return win
+    end
+  end
+end
+
+local function term_looks_full(win)
+  local usable = vim.o.lines - vim.o.cmdheight - 1
+  return vim.api.nvim_win_get_height(win) > math.floor(usable * 0.6)
+end
+
+-- A-h: open half terminal; if half → hide; if full → shrink to half
 map(
   {"n", "i", "t"},
   "<A-h>",
-  function () require("nvterm.terminal").toggle "horizontal" end,
+  function ()
+    local win = find_term_win()
+    if not win then
+      require("nvterm.terminal").toggle "horizontal"
+      vim.cmd "wincmd ="
+      term_size_state = "half"
+    elseif term_size_state == "full" or term_looks_full(win) then
+      vim.cmd "wincmd ="
+      term_size_state = "half"
+    else
+      require("nvterm.terminal").toggle "horizontal"
+      term_size_state = nil
+    end
+  end,
   { silent = true, noremap = true, nowait = true, desc = "Toggle half horizontal terminal" }
 )
 
--- Toggle full-height horizontal terminal with Alt + j
+-- A-j: open full terminal; if full → hide; if half → expand to full
 map(
   {"n", "i", "t"},
   "<A-j>",
   function ()
-    require("nvterm.terminal").toggle "horizontal"
-    vim.cmd "wincmd _"
+    local win = find_term_win()
+    if not win then
+      require("nvterm.terminal").toggle "horizontal"
+      vim.cmd "wincmd _"
+      term_size_state = "full"
+    elseif term_size_state == "half" or not term_looks_full(win) then
+      vim.cmd "wincmd _"
+      term_size_state = "full"
+    else
+      require("nvterm.terminal").toggle "horizontal"
+      term_size_state = nil
+    end
   end,
   { silent = true, noremap = true, nowait = true, desc = "Toggle full horizontal terminal" }
 )
