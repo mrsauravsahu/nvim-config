@@ -1,7 +1,6 @@
 return {
   {
     "tpope/vim-fugitive",
-    lazy = false,
     cmd = { "Git", "G", "Gblame", "Gdiffsplit", "Gdelete" },
     keys = {
       {
@@ -294,7 +293,7 @@ return {
                 -- provider = _99.Providers.ClaudeCodeProvider,  -- default: OpenCodeProvider
         provider = _99.Providers.OpenCodeProvider,
         -- provider = _99.Providers.ClaudeCodeProvider,
-        model = "qwen3.5",
+        model = "gemma4:12b-mlx",
 				logger = {
 					level = _99.DEBUG,
 					path = "/tmp/" .. basename .. ".99.debug",
