@@ -1,0 +1,2 @@
+priority,error,status,notes
+P1,Treesitter highlighter error - attempt to call method 'range' (a nil value) in languagetree.lua on markdown files,open,"Likely caused by markdown injection parsing. Try :TSInstall markdown markdown_inline. If unresolved check which injected language (code block) triggers it."
