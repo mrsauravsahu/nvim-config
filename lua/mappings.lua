@@ -6,55 +6,51 @@ local _99 = require("99")
 -- Map semicolon to colon for command mode entry
 map("n", ";", ":", { desc = "CMD enter command mode" })
 
--- Map jk and jj to ESC in insert mode
-map("i", "jk", "<ESC>")
+-- Map jk to ESC in insert mode
 map("i", "jj", "<ESC>")
+-- Map jj to save in insert mode
+map("i", "kk", "<cmd>w<cr>")
 
--- Toggle NvimTree with Ctrl + \
-map({"n", "i", "t"}, "<C-\\>", function()
-  vim.cmd("NvimTreeToggle")
-end, { noremap = true, silent = true })
-
+-- Toggle NvimTree with Alt + \
 map({"n", "i", "t"}, "<A-\\>", function()
   vim.cmd("NvimTreeToggle")
 end, { noremap = true, silent = true })
 
 -- Save file
-map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 map({ "n", "i", "v" }, "<A-s>", "<cmd> w <cr>")
+map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
 -- Open Telescope
-map({"n", "i", "t"}, "<C-p>", "<cmd> Telescope find_files <cr>",
-  { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
 map({"n", "i", "t"}, "<A-p>", "<cmd> Telescope find_files <cr>",
   { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
 
 -- Open Telescope with no_ignore=true
-map({"n", "i", "t"}, "<C-o>", "<cmd> Telescope find_files no_ignore=true<cr>",
-  { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
 map({"n", "i", "t"}, "<A-o>", "<cmd> Telescope find_files no_ignore=true<cr>",
   { silent = true, noremap = true, nowait = true, desc = "Open Telescope" })
 
 -- Map Ctrl + g and A to append at cursor position in normal, insert, visual, and terminal modes
-map({"n", "i", "v", "t"}, "<C-g><C-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "v", "t"}, "<A-g><A-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + g and R to rewrite at cursor position in normal, insert, visual modes
-map({"n", "i", "v", "t"}, "<C-g><C-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "v", "t"}, "<A-g><A-r>", "<cmd> GpRewrite <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + g and I to toggle nvterm chat popup in normal, insert modes
-map({"n", "i", "t"}, "<C-g><C-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "t"}, "<A-g><A-i>", "<cmd> GpChatToggle popup <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + g and g to tell details about the current GP in normal, insert, visual, and terminal modes
-map({"n", "i", "v", "t"}, "<C-g><C-g>", "<cmd> GpAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "v", "t"}, "<A-g><A-g>", "<cmd> GpAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + q to capture first completion in insert mode
-map({"n", "i", "v", "t"}, "<C-g><C-n>", "<cmd> GpNextAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "v", "t"}, "<A-g><A-n>", "<cmd> GpNextAgent <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + q to capture first completion in insert mode
-map({"i"}, "<C-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"i"}, "<A-q>", "<cmd> ModelCmp capture first<cr>", { silent = true, noremap = true, nowait = true, desc = "" })
 
 -- Map Ctrl + q to capture first completion in insert mode
-map({"n", "i", "v"}, "<C-m>", "<cmd> MarkdownPreview <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+map({"n", "i", "v"}, "<A-m>", "<cmd> MarkdownPreview <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
+
+-- Open Git Fugitive with Alt - g
+map({"n", "i", "v"}, "<A-g>", "<cmd> Git <cr>", { silent = true, noremap = true, nowait = true, desc = "Open Git Fugitive" })
 
 -- "half" | "full" | nil
 local term_size_state = nil
@@ -153,7 +149,7 @@ map(
 -- GP
 map(
   {"n", "i", "t"},
-  "<C-g><C-c>",
+  "<A-g><A-c>",
   function ()
     local gp = require("gp")
     vim.api.nvim_command("%" .. gp.config.cmd_prefix .. "ChatNew")
@@ -174,6 +170,6 @@ map("n", "<leader>9s", function()
 end)
 
 --  opencode
-map({ "v", "i", "n", "t" }, "<C-o><C-o>", function() require("opencode").toggle() end,
+map({ "v", "i", "n", "t" }, "<A-o><A-o>", function() require("opencode").toggle() end,
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
 
