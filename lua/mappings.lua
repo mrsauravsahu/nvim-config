@@ -21,7 +21,7 @@ map({ "n", "i", "v" }, "<A-s>", "<cmd> w <cr>")
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
 -- Toggle Telescope find_files (close if a picker is open, else open)
-local function toggle_telescope(cmd)
+local function toggle_telescope(open_fn)
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
     if vim.bo[buf].filetype == "TelescopePrompt" then
@@ -29,15 +29,24 @@ local function toggle_telescope(cmd)
       return
     end
   end
-  vim.cmd(cmd)
+  open_fn()
 end
 
-map({"n", "i", "t"}, "<A-p>", function() toggle_telescope("Telescope find_files") end,
-  { silent = true, noremap = true, nowait = true, desc = "Toggle Telescope" })
+-- hidden=true so dotfiles (.gitignore, .env, etc) show up; rg hides them by
+-- default independent of .gitignore filtering. file_ignore_patterns keeps
+-- .git/ internals out since --hidden would otherwise surface them too.
+map({"n", "i", "t"}, "<A-p>", function()
+  toggle_telescope(function()
+    require("telescope.builtin").find_files({ hidden = true, file_ignore_patterns = { "^%.git/" } })
+  end)
+end, { silent = true, noremap = true, nowait = true, desc = "Toggle Telescope" })
 
 -- Open Telescope with no_ignore=true
-map({"n", "i", "t"}, "<A-o>", function() toggle_telescope("Telescope find_files no_ignore=true") end,
-  { silent = true, noremap = true, nowait = true, desc = "Toggle Telescope" })
+map({"n", "i", "t"}, "<A-o>", function()
+  toggle_telescope(function()
+    require("telescope.builtin").find_files({ hidden = true, no_ignore = true, file_ignore_patterns = { "^%.git/" } })
+  end)
+end, { silent = true, noremap = true, nowait = true, desc = "Toggle Telescope" })
 
 -- Map Ctrl + g and A to append at cursor position in normal, insert, visual, and terminal modes
 map({"n", "i", "v", "t"}, "<A-g><A-a>", "<cmd> GpAppend <cr>", { silent = true, noremap = true, nowait = true, desc = "" })
