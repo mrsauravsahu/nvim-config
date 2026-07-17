@@ -40,10 +40,10 @@ Sessions are saved **per working directory** automatically.
 
 | Key | Action |
 |-----|--------|
-| `Alt+p` | **Toggle** find files (respects .gitignore); closes picker if already open |
-| `Alt+o` | **Toggle** find files ignoring .gitignore (shows everything); closes picker if already open |
+| `Alt+p` | **Toggle** find files (respects .gitignore, shows dotfiles); closes picker if already open |
+| `Alt+o` | **Toggle** find files ignoring .gitignore (shows everything, shows dotfiles); closes picker if already open |
 
-Both work from normal, insert, and terminal mode.
+Both show dotfiles (`.gitignore`, `.env`, etc) but hide `.git/` internals. Both work from normal, insert, and terminal mode.
 
 NvChad also ships these Telescope mappings by default:
 - `<leader>fw`: live grep across project
