@@ -16,6 +16,11 @@ map({"n", "i", "t"}, "<A-\\>", function()
   vim.cmd("NvimTreeToggle")
 end, { noremap = true, silent = true })
 
+-- Toggle NvimTree with Alt + b
+map({"n", "i", "t"}, "<A-b>", function()
+  vim.cmd("NvimTreeToggle")
+end, { noremap = true, silent = true })
+
 -- Save file
 map({ "n", "i", "v" }, "<A-s>", "<cmd> w <cr>")
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")

@@ -26,7 +26,7 @@ Rule of thumb: **AI layer has the most unused power.**
 - **Italic comments** via highlight override
 - **NvimTree** file explorer on the **right side**, shows dotfiles and git-ignored files
   - Auto-opens on startup if no saved session exists
-  - Toggle: `Ctrl+\` or `Alt+\` (works in normal, insert, terminal mode)
+  - Toggle: `Ctrl+\`, `Alt+\`, or `Alt+b` (works in normal, insert, terminal mode)
 
 ## Sessions (auto-session)
 
