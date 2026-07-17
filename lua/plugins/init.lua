@@ -404,8 +404,11 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    build = ":TSUpdate",
     opts = {
       ensure_installed = {
+        "markdown",
         "vim",
         "lua",
         "vimdoc",
