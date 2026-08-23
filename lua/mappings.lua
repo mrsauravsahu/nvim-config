@@ -198,3 +198,17 @@ end)
 map({ "v", "i", "n", "t" }, "<A-o><A-o>", function() require("opencode").toggle() end,
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
 
+-- Jumplist navigation
+-- <C-o> is disabled deliberately: its jumplist semantics (any "far" motion, not
+-- just a file switch) surprised more than they helped. Use <C--> / <C-=> below.
+map("n", "<C-o>", "<Nop>", { noremap = true, desc = "Disabled (use <C--> to jump back)" })
+
+-- Cursor back / forward through the jumplist.
+-- <C-_> is the byte most terminals actually send for Ctrl+-; <C--> is the
+-- kitty-keyboard-protocol form. Both are bound so this works either way.
+-- Ctrl+= has no legacy control code, so <C-=> needs a terminal with the kitty
+-- keyboard protocol enabled.
+map("n", "<C-->", "<C-o>", { noremap = true, silent = true, desc = "Jump back to previous cursor position" })
+map("n", "<C-_>", "<C-o>", { noremap = true, silent = true, desc = "Jump back to previous cursor position" })
+map("n", "<C-=>", "<C-i>", { noremap = true, silent = true, desc = "Jump forward to next cursor position" })
+

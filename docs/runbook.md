@@ -353,14 +353,114 @@ Only activates for `.md` files.
 
 # Windows & Splits
 
+These are stock Vim window commands — nothing in this config remaps `C-w`.
+
+## Open a split
+
 | Key | Action |
 |-----|--------|
-| `C-w v` or `:vsp` | Open vertical split |
-| `C-w s` or `:sp` | Open horizontal split |
+| `C-w v` or `:vsp` | Open vertical split (current buffer) |
+| `C-w s` or `:sp` | Open horizontal split (current buffer) |
+| `:vs <file>` | Vertical split, opening `<file>` in it |
+| `:sp <file>` | Horizontal split, opening `<file>` in it |
+
+To open a *different* file straight into a new split, use the picker rather than
+splitting first:
+
+| Where | Key | Action |
+|-------|-----|--------|
+| Telescope | `Ctrl+v` | Open selection in vertical split |
+| Telescope | `Ctrl+x` | Open selection in horizontal split |
+| Telescope | `Ctrl+t` | Open selection in new tab |
+| NvimTree (`Alt+b`) | `Ctrl+v` | Open file under cursor in vertical split |
+| NvimTree (`Alt+b`) | `Ctrl+x` | Open file under cursor in horizontal split |
+| NvimTree (`Alt+b`) | `Ctrl+t` | Open file under cursor in new tab |
+
+## Focus
+
+| Key | Action |
+|-----|--------|
 | `C-w h` | Focus window left |
 | `C-w l` | Focus window right |
 | `C-w j` | Focus window down |
-| `C-w k` | Focus window up |
+| `C-w k` | Focus window up (bottom pane → top) |
+| `C-w w` | Cycle to next window (wraps) |
+| `C-w W` | Cycle to previous window |
+| `C-w p` | Focus the previously focused window (toggle back and forth) |
+| `C-w t` / `C-w b` | Focus top-left / bottom-right window |
+
+## Close
+
+| Key | Action |
+|-----|--------|
+| `C-w q` or `:q` | Close current window |
+| `C-w o` | Close all *other* windows |
+
+Note: `<leader>x` closes the **buffer**, not the window. See [Buffers](#buffers).
+
+## Resize
+
+| Key | Action |
+|-----|--------|
+| `C-w =` | Equalize all window sizes |
+| `C-w _` | Maximise height |
+| `C-w \|` | Maximise width |
+| `C-w -` / `C-w +` | Shrink / grow height |
+| `C-w <` / `C-w >` | Narrow / widen |
+| `:vertical resize 80` | Set exact width |
+
+## Rearrange
+
+| Key | Action |
+|-----|--------|
+| `C-w H` / `C-w J` / `C-w K` / `C-w L` | Move current window to far left / bottom / top / right |
+| `C-w r` | Rotate windows |
+| `C-w x` | Swap current window with the next |
+| `C-w T` | Break current window out into its own tab |
+
+`C-w H` / `C-w K` is how you flip a horizontal split to vertical and back.
+
+Session layout (open files and splits) is restored per project directory by
+auto-session — see [Sessions](#sessions-auto-session).
+
+# Navigating back & forth
+
+Vim tracks three separate histories. They are easy to confuse, so:
+
+| Key | Action | History |
+|-----|--------|---------|
+| `C--` (Ctrl+minus) | Jump back to previous cursor position | jumplist |
+| `C-=` (Ctrl+equal) | Jump forward to next cursor position | jumplist |
+| `:jumps` | Show the jumplist | jumplist |
+| `C-^` or `C-6` | Toggle to the alternate (last) buffer | alternate file |
+| `g;` | Go to previous change position | changelist |
+| `g,` | Go to next change position | changelist |
+| `` `. `` | Jump to the position of the last change | changelist |
+| `:changes` | Show the changelist | changelist |
+
+The **jumplist** records "far" cursor moves both across files *and* within one
+file: `gg`, `G`, `/search`, `}`, `:42`, LSP go-to-definition, and opening a file
+from Telescope all push an entry. So jumping back after a `/search` returns you
+to the pre-search line in the same file — it is not a "go back one file"
+command. For that, use `C-^`.
+
+## Why not `C-o` / `C-i`?
+
+- **`C-o` is mapped to `<Nop>` in this config** (`lua/mappings.lua`). Use `C--`.
+- **`C-i` is unreliable here.** In a terminal, `Ctrl+i` and `Tab` are the same
+  byte (`0x09`), and NvChad maps `Tab` to "next buffer" — so `C-i` gets
+  swallowed and switches buffers instead of jumping forward. `C-=` avoids the
+  collision entirely.
+
+## Terminal support
+
+`Ctrl+-` is bound twice: as `<C-_>` (the byte most terminals send for it) and as
+`<C-->` (the kitty keyboard protocol form), so it works either way.
+
+`Ctrl+=` has **no legacy control code**. It only reaches Neovim from a terminal
+with the kitty keyboard protocol enabled (kitty, WezTerm, Ghostty, foot, and
+Alacritty ≥ 0.13). In a terminal without it, `C-=` will do nothing — rebind the
+forward jump to a plain key such as `<leader>i` in `lua/mappings.lua`.
 
 # Buffers
 
