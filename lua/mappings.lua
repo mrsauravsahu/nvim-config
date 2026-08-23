@@ -202,7 +202,7 @@ map({ "v", "i", "n", "t" }, "<A-o><A-o>", function() require("opencode").toggle(
 -- open, closed stays closed). Windows holding a file are parked on a throwaway
 -- empty buffer first, so closing the files never collapses the layout or the
 -- tree window. Modified buffers are kept and reported rather than discarded.
-map("n", "<leader>X", function()
+map("n", "<leader>z", function()
   local targets, skipped = {}, {}
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
