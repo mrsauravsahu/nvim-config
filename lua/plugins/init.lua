@@ -128,9 +128,10 @@ return {
     "nvim-tree/nvim-tree.lua",
     config = function()
       require("nvim-tree").setup({
+        sync_root_with_cwd = true,
         hijack_directories = { auto_open = true },
         view = {
-          side = "right"
+          side = "left"
         },
         git = {
           enable = true,
@@ -152,7 +153,7 @@ return {
             provider = "ollama",
             name = "qwen3-5",
             chat = true,
-            commmand = true,
+            command = true,
             model = {
               model = "qwen3.5",
             },
@@ -162,7 +163,7 @@ return {
             provider = "ollama",
             name = "llama",
             chat = true,
-            commmand = true,
+            command = true,
             model = {
               model = "llama3.1",
               temperature = 0,
@@ -223,8 +224,8 @@ return {
           --   system_prompt = "You are a Senior Software Engineer.",
           -- },
         },
-        default_command_agent = "qwen3.5",
-        default_chat_agent = "qwen3.5",
+        default_command_agent = "qwen3-5",
+        default_chat_agent = "qwen3-5",
         providers = {
           ollama = {
             endpoint = "http://localhost:11434/api/chat",
