@@ -198,6 +198,58 @@ end)
 map({ "v", "i", "n", "t" }, "<A-o><A-o>", function() require("opencode").toggle() end,
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
 
+-- Close every open file buffer, leaving NvimTree exactly as it is (open stays
+-- open, closed stays closed). Windows holding a file are parked on a throwaway
+-- empty buffer first, so closing the files never collapses the layout or the
+-- tree window. Modified buffers are kept and reported rather than discarded.
+map("n", "<leader>X", function()
+  local targets, skipped = {}, {}
+
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    -- Only real, listed file buffers: this skips NvimTree, terminals,
+    -- quickfix, help and other special buftypes automatically.
+    if vim.api.nvim_buf_is_valid(buf)
+      and vim.bo[buf].buflisted
+      and vim.bo[buf].buftype == ""
+      and vim.bo[buf].filetype ~= "NvimTree"
+    then
+      if vim.bo[buf].modified then
+        table.insert(skipped, vim.fn.fnamemodify(vim.api.nvim_buf_get_name(buf), ":t"))
+      else
+        table.insert(targets, buf)
+      end
+    end
+  end
+
+  if #targets == 0 then
+    vim.notify("No file buffers to close", vim.log.levels.INFO)
+    return
+  end
+
+  -- Park every window that shows a doomed buffer on a fresh empty buffer, so
+  -- deleting the file buffers cannot close a window.
+  local scratch = vim.api.nvim_create_buf(true, false)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buflisted and vim.bo[buf].buftype == "" and vim.bo[buf].filetype ~= "NvimTree" then
+      vim.api.nvim_win_set_buf(win, scratch)
+    end
+  end
+
+  for _, buf in ipairs(targets) do
+    pcall(vim.api.nvim_buf_delete, buf, {})
+  end
+
+  if #skipped > 0 then
+    vim.notify(
+      ("Closed %d buffer(s); kept %d unsaved: %s"):format(#targets, #skipped, table.concat(skipped, ", ")),
+      vim.log.levels.WARN
+    )
+  else
+    vim.notify(("Closed %d buffer(s)"):format(#targets), vim.log.levels.INFO)
+  end
+end, { noremap = true, silent = true, desc = "Close all file buffers (keep NvimTree state)" })
+
 -- Jumplist navigation
 -- <C-o> is disabled deliberately: its jumplist semantics (any "far" motion, not
 -- just a file switch) surprised more than they helped. Use <C--> / <C-=> below.

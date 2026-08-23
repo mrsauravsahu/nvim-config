@@ -469,6 +469,7 @@ forward jump to a plain key such as `<leader>i` in `lua/mappings.lua`.
 | `Tab` | Next buffer |
 | `Shift+Tab` | Previous buffer |
 | `<leader>x` | Close buffer |
+| `<leader>X` | Close all file buffers (keeps NvimTree state) — see [General Mappings](#general-mappings) |
 | `<leader>b` | New buffer |
 | `<leader>fb` | Find open buffers (Telescope) |
 
@@ -480,6 +481,20 @@ forward jump to a plain key such as `<leader>i` in `lua/mappings.lua`.
 | `jj` (insert) | Exit insert mode |
 | `kk` (insert) | Save file (`:w`) without leaving insert |
 | `Ctrl+s` / `Alt+s` | Save file (normal, insert, visual) |
+| `<leader>X` | **Close all file tabs**, keeping NvimTree as-is |
+
+## `<leader>X` — close all file tabs
+
+Clears every open file buffer (the tabs along the top) in one go, leaving the
+editor on an empty buffer. Pairs with `<leader>x`, which closes just the current
+one.
+
+- **NvimTree is left exactly as it was** — open stays open, closed stays closed.
+- The window layout is preserved: splits are parked on an empty buffer rather
+  than being closed, so the tree window never collapses.
+- Terminals, quickfix, and help windows are untouched.
+- **Unsaved buffers are kept**, not discarded. You get a warning naming them;
+  save or `<leader>x` them yourself.
 
 # NvChad Built-ins
 
