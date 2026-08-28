@@ -435,6 +435,14 @@ return {
   },
   { "danilamihailov/beacon.nvim" },
   {
+    "nvim-lualine/lualine.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    lazy = false,
+    config = function()
+      require("lualine").setup(require("configs.lualine").opts)
+    end,
+  },
+  {
     'mcauley-penney/visual-whitespace.nvim',
     event = "ModeChanged *:[vV\22]",
   }
