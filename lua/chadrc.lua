@@ -11,6 +11,16 @@ M.base46 = {
 	hl_override = {
     Comment = { italic = true },
 		["@comment"] = { italic = true },
+
+		-- Blend window separators into the background so the NvimTree/buffer
+		-- border and the rule above the statusline disappear. base46 resolves
+		-- these names against the active theme, so it follows theme switches.
+		-- All three must share one bg, otherwise the separator column is
+		-- tree-coloured beside NvimTree and buffer-coloured below it, which
+		-- shows up as a one-cell step at the bottom of the split.
+		WinSeparator = { fg = "black", bg = "black" },
+		VertSplit = { fg = "black", bg = "black" },
+		NvimTreeWinSeparator = { fg = "black", bg = "black" },
 	},
 }
 
