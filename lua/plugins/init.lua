@@ -433,7 +433,9 @@ return {
       },
     },
   },
-  -- test new blink
-  -- { import = "nvchad.blink.lazyspec" },
-  { "danilamihailov/beacon.nvim" }
+  { "danilamihailov/beacon.nvim" },
+  {
+    'mcauley-penney/visual-whitespace.nvim',
+    event = "ModeChanged *:[vV\22]",
+  }
 }
