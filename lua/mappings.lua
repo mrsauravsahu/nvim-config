@@ -11,6 +11,9 @@ map("i", "jj", "<ESC>")
 -- Map jj to save in insert mode
 map("i", "kk", "<cmd>w<cr>")
 
+-- View keymaps
+map({ "n", "i", "v" }, "<leader>ks", "<cmd> Telescope keymaps <cr>")
+
 -- Toggle NvimTree with Alt + \
 map({"n", "i", "t"}, "<A-\\>", function()
   vim.cmd("NvimTreeToggle")
