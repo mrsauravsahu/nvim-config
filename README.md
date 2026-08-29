@@ -23,6 +23,14 @@ Source: <https://github.com/NvChad/NvChad>
 
 > Rule of thumb: **the AI layer has the most unused power.**
 
+## Finding a Keymap
+
+**`<leader>ks` — searchable list of every active keymap** (`:Telescope keymaps`). Works in normal, insert and visual mode.
+
+This is the source of truth. The tables below name the features and the keys they *should* sit on, but when a key doesn't land — shadowed by a chord, changed by a plugin update, or simply not written down here — press `<leader>ks` and fuzzy-search the action (`rename`, `terminal`, `hunk`, `opencode`) instead of guessing.
+
+Companions: `:NvCheatsheet` for NvChad defaults, `:Telescope mapper` for descriptions registered through nvim-mapper.
+
 ## IDE Capability Map
 
 What a full IDE gives you, and where this config delivers it. Use this as the index.
@@ -51,7 +59,7 @@ What a full IDE gives you, and where this config delivers it. Use this as the in
 
 # UI & Theme
 
-- **Theme**: `bearded-arc` — change in `lua/chadrc.lua` → `M.base46.theme`
+- **Theme**: `catppuccin` — change in `lua/chadrc.lua` → `M.base46.theme`
 - **NvDash**: startup dashboard loads automatically
 - **Whitespace rendering**: spaces as `·`, tabs as `»`, trailing spaces highlighted, overflow markers `⟩⟨`
 - **Italic comments** via highlight override
@@ -115,8 +123,13 @@ Horizontal split terminal with smart sizing.
 | `Alt+k` | Increase terminal height by 5 lines |
 | `Alt+l` | Decrease terminal height by 5 lines |
 | `` Alt+` `` | Simple toggle horizontal terminal |
+| `Alt+q` | Close **all** terminals (prompts `Quit`/`Cancel`, defaults to Quit) |
 
 All work from normal, insert, and terminal mode.
+
+`Alt+q` (`lua/custom/terminals.lua`) sweeps every terminal buffer — including ones toggled out of view, which nvterm's own `close_all_terms` misses — and deliberately skips opencode's panel. The same sweep runs automatically on `QuitPre`, silently, so terminals never leak into a saved session. Terminals here run tmux: closing the buffer kills the tmux *client* only; the server and its sessions survive detached and can be reattached.
+
+> **Conflict:** `Alt+q` in **insert mode** is also mapped to model-cmp's accept-completion (see AI Assistants). The terminal mapping is defined later in `lua/mappings.lua`, so it wins — accept inline completions from insert mode with `:ModelCmp capture first` until one of the two is rebound.
 
 # Git
 
@@ -306,7 +319,7 @@ Shows AI-powered virtual text completions inline as you type.
 
 | Key | Action |
 |-----|--------|
-| `Alt+q` (insert) | Accept the first completion suggestion |
+| `Alt+q` (insert) | Accept the first completion suggestion — **currently shadowed** by close-all-terminals (see Terminal) |
 
 Virtual text displays in a reddish colour. Enabled automatically on startup. This runs against a local model endpoint (`127.0.0.1:9000`) — no suggestions means that server isn't up.
 
@@ -349,7 +362,13 @@ Only activates for `.md` files.
 
 # Keybinding Discovery
 
-`:Telescope mapper` — browse all mapped keybindings with descriptions in a searchable picker.
+| Key / Command | Action |
+|---|---|
+| `<leader>ks` | **All active keymaps**, searchable (`:Telescope keymaps`) — n/i/v |
+| `:NvCheatsheet` | NvChad's built-in default mappings, grouped |
+| `:Telescope mapper` | Keybindings registered with descriptions via nvim-mapper |
+
+`<leader>ks` is the one to reach for: it reflects what is *actually* bound right now, including the plugin and NvChad defaults this README doesn't enumerate. Search by the action name — `rename`, `code action`, `hunk`, `format`, `opencode` — to find its key.
 
 # Windows & Splits
 
