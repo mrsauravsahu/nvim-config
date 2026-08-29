@@ -167,6 +167,14 @@ map(
   { silent = true, noremap = true, nowait = true, desc = "Decrease terminal height" }
 )
 
+-- A-q: centered Quit/Cancel dialog; Quit closes every terminal, then quits nvim
+map(
+  {"n", "i", "t"},
+  "<A-q>",
+  function () require("custom.terminals").close_all() end,
+  { silent = true, noremap = true, nowait = true, desc = "Close all terminals and quit" }
+)
+
 map(
   {"n", "i", "t"},
   "<A-`>",

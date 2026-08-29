@@ -15,3 +15,10 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
     vim.notify("File changed on disk. Buffer reloaded.", vim.log.levels.WARN)
   end,
 })
+
+vim.api.nvim_create_autocmd("QuitPre", {
+  desc = "Close nvterm terminals before quitting",
+  callback = function()
+    require("custom.terminals").close_all { silent = true }
+  end,
+})
