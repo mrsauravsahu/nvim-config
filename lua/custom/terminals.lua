@@ -172,4 +172,33 @@ function M.close_all(opts)
   return false
 end
 
+-- Sidebars (NvimTree, etc.) are windows too, so a `rightbelow split` taken while
+-- the tree is focused would carve the terminal out of the sidebar column. Move
+-- focus to a real editor window first so the terminal lands on the right side.
+local sidebar_fts = {
+  NvimTree = true,
+  ["neo-tree"] = true,
+  undotree = true,
+  Outline = true,
+  aerial = true,
+}
+
+function M.focus_editor_win()
+  local function is_sidebar(win)
+    local buf = vim.api.nvim_win_get_buf(win)
+    return sidebar_fts[vim.bo[buf].filetype] or vim.api.nvim_win_get_config(win).relative ~= ""
+  end
+
+  if not is_sidebar(vim.api.nvim_get_current_win()) then
+    return
+  end
+
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if not is_sidebar(win) then
+      vim.api.nvim_set_current_win(win)
+      return
+    end
+  end
+end
+
 return M

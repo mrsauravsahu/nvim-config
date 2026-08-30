@@ -103,6 +103,7 @@ map(
   function ()
     local win = find_term_win()
     if not win then
+      require("custom.terminals").focus_editor_win()
       require("nvterm.terminal").toggle "horizontal"
       vim.cmd "wincmd ="
       term_size_state = "half"
@@ -125,6 +126,7 @@ map(
   function ()
     local win = find_term_win()
     if not win then
+      require("custom.terminals").focus_editor_win()
       require("nvterm.terminal").toggle "horizontal"
       vim.cmd "wincmd _"
       term_size_state = "full"
@@ -178,7 +180,10 @@ map(
 map(
   {"n", "i", "t"},
   "<A-`>",
-  function () require("nvterm.terminal").toggle "horizontal" end,
+  function ()
+    require("custom.terminals").focus_editor_win()
+    require("nvterm.terminal").toggle "horizontal"
+  end,
   { silent = true, noremap = true, nowait = true, desc = "Toggle horizontal terminal" }
 )
 
