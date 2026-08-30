@@ -14,9 +14,9 @@ map("i", "kk", "<cmd>w<cr>")
 -- View keymaps
 map({ "n", "i", "v" }, "<leader>ks", "<cmd> Telescope keymaps <cr>")
 
--- Toggle NvimTree with Alt + \
+-- Focus NvimTree with Alt + \ (opens it if it is not already visible)
 map({"n", "i", "t"}, "<A-\\>", function()
-  vim.cmd("NvimTreeToggle")
+  require("nvim-tree.api").tree.focus()
 end, { noremap = true, silent = true })
 
 -- Toggle NvimTree with Alt + b
