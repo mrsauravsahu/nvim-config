@@ -14,9 +14,14 @@ map("i", "kk", "<cmd>w<cr>")
 -- View keymaps
 map({ "n", "i", "v" }, "<leader>ks", "<cmd> Telescope keymaps <cr>")
 
--- Focus NvimTree with Alt + \ (opens it if it is not already visible)
+-- Alt + \ focuses NvimTree (opening it if needed), or closes it when already focused
 map({"n", "i", "t"}, "<A-\\>", function()
-  require("nvim-tree.api").tree.focus()
+  local api = require("nvim-tree.api")
+  if vim.bo.filetype == "NvimTree" then
+    api.tree.close()
+  else
+    api.tree.focus()
+  end
 end, { noremap = true, silent = true })
 
 -- Toggle NvimTree with Alt + b
