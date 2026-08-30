@@ -102,7 +102,7 @@ return {
               height = 0.4,
               border = "single",
             },
-            horizontal = { location = "botright", split_ratio = .5 },
+            horizontal = { location = "rightbelow", split_ratio = .5 },
             vertical = { location = "rightbelow", split_ratio = .5 },
           }
         },
