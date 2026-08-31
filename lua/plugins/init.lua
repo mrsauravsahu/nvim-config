@@ -433,6 +433,12 @@ return {
       },
     },
   },
+  {
+    "akinsho/git-conflict.nvim",
+    version = "*",
+    lazy = false,
+    opts = {},
+  },
   { "danilamihailov/beacon.nvim" },
   {
     "nvim-lualine/lualine.nvim",
