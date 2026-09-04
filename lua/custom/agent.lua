@@ -51,10 +51,11 @@ local function agent_pane()
   return panes[1].id
 end
 
--- Path relative to cwd: `gw` starts nvim and the agent in the same directory,
--- so a relative path is what the agent can act on directly.
-local function relative_path()
-  local path = vim.fn.expand "%:."
+-- Absolute, so the reference stays correct no matter what either side's cwd is:
+-- nvim's can move with `:cd`/`:lcd`, and the agent's stays wherever `gw` put it,
+-- so a relative path would silently resolve against the wrong directory.
+local function buffer_path()
+  local path = vim.fn.expand "%:p"
   if path == "" then
     return nil, "current buffer has no file"
   end
@@ -80,7 +81,7 @@ end
 
 --- Send the current file and cursor line.
 function M.cursor()
-  local path, err = relative_path()
+  local path, err = buffer_path()
   if not path then
     vim.notify("agent: " .. err, vim.log.levels.WARN)
     return
@@ -90,7 +91,7 @@ end
 
 --- Send the current file and the visually selected line range.
 function M.visual()
-  local path, err = relative_path()
+  local path, err = buffer_path()
   if not path then
     vim.notify("agent: " .. err, vim.log.levels.WARN)
     return
