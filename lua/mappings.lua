@@ -217,3 +217,11 @@ end)
 map({ "v", "i", "n", "t" }, "<A-o><A-o>", function() require("opencode").toggle() end,
   { silent = true, noremap = false, nowait = true, desc = "Toggle the nvterm terminal" })
 
+-- A-a: drop where I am into the genai tool in the pane next door (see `gw`).
+-- Nothing is submitted -- type the question after it and hit enter yourself.
+map({ "n", "i" }, "<A-a>", function() require("custom.agent").cursor() end,
+  { silent = true, noremap = true, nowait = true, desc = "Send cursor location to agent pane" })
+
+map("v", "<A-a>", function() require("custom.agent").visual() end,
+  { silent = true, noremap = true, nowait = true, desc = "Send selected range to agent pane" })
+
