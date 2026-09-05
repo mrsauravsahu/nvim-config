@@ -144,10 +144,10 @@ map(
   { silent = true, noremap = true, nowait = true, desc = "Toggle full horizontal terminal" }
 )
 
--- A-k: increase terminal height by 5 lines
+-- A-=: increase terminal height by 5 lines (A-k is the VSCode chord leader)
 map(
   {"n", "i", "t"},
-  "<A-k>",
+  "<A-=>",
   function ()
     local win = find_term_win()
     if win then
@@ -158,10 +158,10 @@ map(
   { silent = true, noremap = true, nowait = true, desc = "Increase terminal height" }
 )
 
--- A-l: decrease terminal height by 5 lines
+-- A--: decrease terminal height by 5 lines
 map(
   {"n", "i", "t"},
-  "<A-l>",
+  "<A-->",
   function ()
     local win = find_term_win()
     if win then
@@ -225,3 +225,6 @@ map({ "n", "i" }, "<A-a>", function() require("custom.agent").cursor() end,
 map("v", "<A-a>", function() require("custom.agent").visual() end,
   { silent = true, noremap = true, nowait = true, desc = "Send selected range to agent pane" })
 
+
+-- VSCode-style Alt keybindings (buffers, editing, search, LSP, A-k chords)
+require "custom.vscode_keys"
