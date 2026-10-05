@@ -133,7 +133,7 @@ All work from normal, insert, and terminal mode.
 
 # Git
 
-Two tools, split by job: **gitsigns** = see + stage hunks; **fugitive** = commit + push.
+Three tools, split by job: **gitsigns** = see + stage hunks; **fugitive** = commit + push; **git-conflict** = resolve merge conflicts.
 
 ## Daily Loop
 
@@ -167,6 +167,40 @@ Then `:Git push` / `:Git pull --rebase` — no terminal needed.
 | `:Gdelete` | Delete file via git |
 
 **Inline blame** is always on via gitsigns (`current_line_blame = true`).
+
+## Merge Conflicts (git-conflict.nvim)
+
+Conflict regions are highlighted automatically in any buffer containing conflict
+markers. Commands work anywhere; the keys below only exist while resolving.
+
+| Key | Command | Action |
+|---|---|---|
+| `co` | `:GitConflictChooseOurs` | Keep **ours** (current / HEAD side) |
+| `ct` | `:GitConflictChooseTheirs` | Keep **theirs** (incoming side) |
+| `cb` | `:GitConflictChooseBoth` | Keep both sides |
+| `c0` | `:GitConflictChooseNone` | Delete the whole conflict region |
+| `]x` / `[x` | `:GitConflictNext/PrevConflict` | Jump between conflicts |
+| — | `:GitConflictListQf` | Load every conflict in the repo into quickfix |
+
+**The keys are off by default.** The plugin ships `default_mappings = false`, and
+the spec in `lua/plugins/init.lua` passes `opts = {}` — so today only the
+commands work. To turn the keys on:
+
+```lua
+{
+  "akinsho/git-conflict.nvim",
+  version = "*",
+  lazy = false,
+  opts = { default_mappings = true },
+},
+```
+
+Caveat: `co` / `ct` / `cb` / `c0` shadow the `c` change-operator with those
+motions (`cb` = change-back-a-word is a real one). The maps are buffer-local to
+conflicted buffers only, so the collision is narrow — but it is there while you
+resolve. Binding the commands under your own `<leader>` prefix avoids it.
+
+Save the file when done, then `git add` it and finish the merge in the terminal.
 
 # Autocompletion (nvim-cmp)
 
