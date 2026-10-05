@@ -83,6 +83,9 @@ map({"n", "i", "v"}, "<A-m>", "<cmd> MarkdownPreview <cr>", { silent = true, nor
 -- Open Git Fugitive with Alt - g
 map({"n", "i", "v"}, "<A-g>", "<cmd> Git <cr>", { silent = true, noremap = true, nowait = true, desc = "Open Git Fugitive" })
 
+-- space g a: stage the current file
+map("n", "<leader>ga", "<cmd>Git add %<cr>", { silent = true, noremap = true, desc = "Stage current file" })
+
 -- "half" | "full" | nil
 local term_size_state = nil
 
@@ -224,4 +227,3 @@ map({ "n", "i" }, "<A-a>", function() require("custom.agent").cursor() end,
 
 map("v", "<A-a>", function() require("custom.agent").visual() end,
   { silent = true, noremap = true, nowait = true, desc = "Send selected range to agent pane" })
-
