@@ -130,6 +130,9 @@ return {
       require("nvim-tree").setup({
         sync_root_with_cwd = true,
         hijack_directories = { auto_open = true },
+        renderer = {
+          root_folder_label = ":t",
+        },
         view = {
           side = "left"
         },
