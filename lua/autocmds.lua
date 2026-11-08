@@ -16,6 +16,25 @@ vim.api.nvim_create_autocmd("FileChangedShellPost", {
   end,
 })
 
+-- Terminal panes (nvterm, the <A-c> harness, opencode) take the sidebar's
+-- darker bg, so with the split rules blanked the editor still reads as the one
+-- lighter area. BufWinEnter re-applies it when a hidden terminal is reshown in
+-- a fresh window. No cursorline: the shell/harness draws its own cursor.
+vim.api.nvim_create_autocmd({ "TermOpen", "BufWinEnter" }, {
+  desc = "Style terminal panes",
+  callback = function(ev)
+    if vim.bo[ev.buf].buftype ~= "terminal" then
+      return
+    end
+    local win = vim.fn.bufwinid(ev.buf)
+    if win == -1 then
+      return
+    end
+    vim.wo[win].winhighlight = "Normal:TermNormal,NormalNC:TermNormal"
+    vim.wo[win].cursorline = false
+  end,
+})
+
 vim.api.nvim_create_autocmd("QuitPre", {
   desc = "Close nvterm terminals before quitting",
   callback = function()

@@ -86,94 +86,17 @@ map({"n", "i", "v"}, "<A-g>", "<cmd> Git <cr>", { silent = true, noremap = true,
 -- space g a: stage the current file
 map("n", "<leader>ga", "<cmd>Git add %<cr>", { silent = true, noremap = true, desc = "Stage current file" })
 
--- "half" | "full" | nil
-local term_size_state = nil
-
-local function find_term_win()
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.bo[vim.api.nvim_win_get_buf(win)].buftype == "terminal" then
-      return win
-    end
-  end
-end
-
-local function term_looks_full(win)
-  local usable = vim.o.lines - vim.o.cmdheight - 1
-  return vim.api.nvim_win_get_height(win) > math.floor(usable * 0.6)
-end
-
--- A-h: open half terminal; if half → hide; if full → shrink to half
-map(
-  {"n", "i", "t"},
-  "<A-h>",
-  function ()
-    local win = find_term_win()
-    if not win then
-      require("custom.terminals").focus_editor_win()
-      require("nvterm.terminal").toggle "horizontal"
-      vim.cmd "wincmd ="
-      term_size_state = "half"
-    elseif term_size_state == "full" or term_looks_full(win) then
-      local half = math.floor((vim.o.lines - vim.o.cmdheight - 1) * 0.5)
-      vim.api.nvim_win_set_height(win, half)
-      term_size_state = "half"
-    else
-      require("nvterm.terminal").toggle "horizontal"
-      term_size_state = nil
-    end
-  end,
-  { silent = true, noremap = true, nowait = true, desc = "Toggle half horizontal terminal" }
-)
-
--- A-j: open full terminal; if full → hide; if half → expand to full
-map(
-  {"n", "i", "t"},
-  "<A-j>",
-  function ()
-    local win = find_term_win()
-    if not win then
-      require("custom.terminals").focus_editor_win()
-      require("nvterm.terminal").toggle "horizontal"
-      vim.cmd "wincmd _"
-      term_size_state = "full"
-    elseif term_size_state == "half" or not term_looks_full(win) then
-      vim.cmd "wincmd _"
-      term_size_state = "full"
-    else
-      require("nvterm.terminal").toggle "horizontal"
-      term_size_state = nil
-    end
-  end,
-  { silent = true, noremap = true, nowait = true, desc = "Toggle full horizontal terminal" }
-)
-
--- A-k: increase terminal height by 5 lines
-map(
-  {"n", "i", "t"},
-  "<A-k>",
-  function ()
-    local win = find_term_win()
-    if win then
-      local height = vim.api.nvim_win_get_height(win)
-      vim.api.nvim_win_set_height(win, height + 5)
-    end
-  end,
-  { silent = true, noremap = true, nowait = true, desc = "Increase terminal height" }
-)
-
--- A-l: decrease terminal height by 5 lines
-map(
-  {"n", "i", "t"},
-  "<A-l>",
-  function ()
-    local win = find_term_win()
-    if win then
-      local height = vim.api.nvim_win_get_height(win)
-      vim.api.nvim_win_set_height(win, math.max(5, height - 5))
-    end
-  end,
-  { silent = true, noremap = true, nowait = true, desc = "Decrease terminal height" }
-)
+-- Bottom terminal (logic in custom/terminals.lua). A-h: half, A-j: full --
+-- each opens, hides, or switches size; A-k / A-l: grow / shrink by 5 lines.
+local terminal_opts = { silent = true, noremap = true, nowait = true }
+map({"n", "i", "t"}, "<A-h>", function() require("custom.terminals").toggle_half() end,
+  vim.tbl_extend("force", terminal_opts, { desc = "Toggle half horizontal terminal" }))
+map({"n", "i", "t"}, "<A-j>", function() require("custom.terminals").toggle_full() end,
+  vim.tbl_extend("force", terminal_opts, { desc = "Toggle full horizontal terminal" }))
+map({"n", "i", "t"}, "<A-k>", function() require("custom.terminals").resize(5) end,
+  vim.tbl_extend("force", terminal_opts, { desc = "Increase terminal height" }))
+map({"n", "i", "t"}, "<A-l>", function() require("custom.terminals").resize(-5) end,
+  vim.tbl_extend("force", terminal_opts, { desc = "Decrease terminal height" }))
 
 -- A-q: centered Quit/Cancel dialog; Quit closes every terminal, then quits nvim
 map(
@@ -186,10 +109,7 @@ map(
 map(
   {"n", "i", "t"},
   "<A-`>",
-  function ()
-    require("custom.terminals").focus_editor_win()
-    require("nvterm.terminal").toggle "horizontal"
-  end,
+  function () require("custom.terminals").toggle() end,
   { silent = true, noremap = true, nowait = true, desc = "Toggle horizontal terminal" }
 )
 

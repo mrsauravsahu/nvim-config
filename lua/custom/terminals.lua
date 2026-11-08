@@ -201,4 +201,86 @@ function M.focus_editor_win()
   end
 end
 
+-- The bottom terminal and its sizing keys. Only nvterm's horizontal terminal
+-- counts: the harness split (<A-c>) is a terminal too, but it's a full-height
+-- column these keys must leave alone.
+
+-- "half" | "full" | nil
+local size_state = nil
+
+local function horizontal_win()
+  local ok, nvterm = pcall(require, "nvterm.terminal")
+  if not ok then
+    return nil
+  end
+  for _, term in ipairs(nvterm.list_terms() or {}) do
+    if
+      term.type == "horizontal"
+      and term.open
+      and term.win
+      and vim.api.nvim_win_is_valid(term.win)
+      and vim.api.nvim_win_get_buf(term.win) == term.buf
+    then
+      return term.win
+    end
+  end
+end
+
+local function usable_height()
+  return vim.o.lines - vim.o.cmdheight - 1
+end
+
+local function looks_full(win)
+  return vim.api.nvim_win_get_height(win) > math.floor(usable_height() * 0.6)
+end
+
+--- Show or hide the bottom terminal, landing it under the editor, not the tree.
+function M.toggle()
+  if not horizontal_win() then
+    M.focus_editor_win()
+  end
+  require("nvterm.terminal").toggle "horizontal"
+end
+
+--- Open at half height; if half, hide; if full, shrink to half.
+function M.toggle_half()
+  local win = horizontal_win()
+  if not win then
+    M.toggle()
+    vim.cmd "wincmd ="
+    size_state = "half"
+  elseif size_state == "full" or looks_full(win) then
+    vim.api.nvim_win_set_height(win, math.floor(usable_height() * 0.5))
+    size_state = "half"
+  else
+    M.toggle()
+    size_state = nil
+  end
+end
+
+--- Open at full height; if full, hide; if half, expand to full.
+function M.toggle_full()
+  local win = horizontal_win()
+  if not win then
+    M.toggle()
+    vim.cmd "wincmd _"
+    size_state = "full"
+  elseif size_state == "half" or not looks_full(win) then
+    vim.api.nvim_set_current_win(win)
+    vim.cmd "wincmd _"
+    size_state = "full"
+  else
+    M.toggle()
+    size_state = nil
+  end
+end
+
+--- Grow (positive) or shrink (negative) the bottom terminal, never below 5 lines.
+function M.resize(delta)
+  local win = horizontal_win()
+  if win then
+    vim.api.nvim_win_set_height(win, math.max(5, vim.api.nvim_win_get_height(win) + delta))
+  end
+end
+
 return M

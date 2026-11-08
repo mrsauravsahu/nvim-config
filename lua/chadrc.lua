@@ -22,6 +22,16 @@ M.base46 = {
 		VertSplit = { fg = "black", bg = "black" },
 		NvimTreeWinSeparator = { fg = "black", bg = "black" },
 	},
+
+	-- hl_override only touches groups base46 already defines; these two are new.
+	hl_add = {
+		-- Unfocused editor splits dim their plain text -- the cue for which
+		-- pane is active now that the separators are blank.
+		NormalNC = { fg = "light_grey" },
+
+		-- Terminal panes (see autocmds.lua) share the sidebar's darker bg.
+		TermNormal = { bg = "darker_black" },
+	},
 }
 
 M.nvdash = { load_on_startup = true }
