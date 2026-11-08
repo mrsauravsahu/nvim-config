@@ -454,5 +454,21 @@ return {
   {
     'mcauley-penney/visual-whitespace.nvim',
     event = "ModeChanged *:[vV\22]",
-  }
+  },
+  {
+    -- MCP server so Claude Code can drive this nvim instance
+    -- (nvim-mcp binary installed separately via `cargo install nvim-mcp`)
+    "linw1995/nvim-mcp",
+    lazy = false,
+    config = function()
+      -- skip git's throwaway editors so there's one socket per repo
+      for _, arg in ipairs(vim.fn.argv()) do
+        if arg:match("COMMIT_EDITMSG$") or arg:match("MERGE_MSG$")
+          or arg:match("git%-rebase%-todo$") or arg:match("TAG_EDITMSG$") then
+          return
+        end
+      end
+      require("nvim-mcp").setup({})
+    end,
+  },
 }
