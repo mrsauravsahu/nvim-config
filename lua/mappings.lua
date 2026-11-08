@@ -227,3 +227,7 @@ map({ "n", "i" }, "<A-a>", function() require("custom.agent").cursor() end,
 
 map("v", "<A-a>", function() require("custom.agent").visual() end,
   { silent = true, noremap = true, nowait = true, desc = "Send selected range to agent pane" })
+
+-- A-c: toggle gw's harness (.friday/config.json) as a right-hand split inside nvim
+map({ "n", "i", "t" }, "<A-c>", function() require("custom.harness").toggle() end,
+  { silent = true, noremap = true, nowait = true, desc = "Toggle harness split" })

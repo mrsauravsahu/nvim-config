@@ -307,12 +307,20 @@ return {
             -- logging mechanisms within 99.  This is for more debugging purposes
             local cwd = vim.uv.cwd()
             local basename = vim.fs.basename(cwd)
-      -- TODO: can i do easy switch
+      -- Follow gw's harness (.friday/config.json): its first word picks the CLI
+      -- 99 shells out to. Unknown harnesses fall back to opencode.
+      local providers = {
+        opencode = _99.Providers.OpenCodeProvider,
+        claude = _99.Providers.ClaudeCodeProvider,
+        ["cursor-agent"] = _99.Providers.CursorAgentProvider,
+      }
+      local provider = providers[require("custom.harness").command():match "^%S+"]
+        or _99.Providers.OpenCodeProvider
 			_99.setup({
-                -- provider = _99.Providers.ClaudeCodeProvider,  -- default: OpenCodeProvider
-        provider = _99.Providers.OpenCodeProvider,
-        -- provider = _99.Providers.ClaudeCodeProvider,
-        model = "gemma4:12b-mlx",
+        provider = provider,
+        -- opencode ids are provider/model (see `opencode models`); the others
+        -- use the provider's default model
+        model = provider == _99.Providers.OpenCodeProvider and "ollama/qwen3.8:27b-mlx" or nil,
 				logger = {
 					level = _99.DEBUG,
 					path = "/tmp/" .. basename .. ".99.debug",
@@ -362,7 +370,7 @@ return {
                     --- - Both methods apply the configured `exclude` list on top of gitignore
 
                     --- What autocomplete engine to use. Defaults to native (built-in) if not specified.
-                    source = "native", -- "native" (default), "cmp", or "blink"
+                    source = "cmp", -- "native" (default), "cmp", or "blink"
                 },
 
                 --- WARNING: if you change cwd then this is likely broken

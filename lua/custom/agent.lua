@@ -63,6 +63,11 @@ local function buffer_path()
 end
 
 local function send(context)
+  -- A harness running inside nvim (<A-c>) wins over the tmux pane next door.
+  if require("custom.harness").send(context .. " ") then
+    return
+  end
+
   local pane, err = agent_pane()
   if not pane then
     vim.notify("agent: " .. err, vim.log.levels.WARN)
