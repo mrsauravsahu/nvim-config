@@ -151,3 +151,11 @@ map("v", "<A-a>", function() require("custom.agent").visual() end,
 -- A-c: toggle gw's harness (.friday/config.json) as a right-hand split inside nvim
 map({ "n", "i", "t" }, "<A-c>", function() require("custom.harness").toggle() end,
   { silent = true, noremap = true, nowait = true, desc = "Toggle harness split" })
+
+-- C-w h/j/k/l/w/p out of terminal panes (the harness, nvterm). Without these the
+-- keys go to the job, and the harness reads C-w as delete-word. A lone C-w still
+-- reaches the job after 'timeoutlen'.
+for _, key in ipairs { "h", "j", "k", "l", "w", "p" } do
+  map("t", "<C-w>" .. key, "<cmd>wincmd " .. key .. "<cr>",
+    { silent = true, noremap = true, desc = "Window " .. key .. " from terminal" })
+end
