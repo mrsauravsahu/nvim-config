@@ -6,9 +6,13 @@ local M = {}
 
 local state = { buf = nil, job = nil }
 
--- Same source of truth as `gw`: $GW_CONFIG, else the hub's .friday/config.json.
--- Falls back to gw's built-in default when the file or key is missing.
+-- Same source of truth as `gw`: $GW_HARNESS (gw's resolved choice, incl. its
+-- `gw <dir> <harness>` override), else $GW_CONFIG, else the hub's
+-- .friday/config.json. Falls back to gw's built-in default.
 function M.command()
+  if vim.env.GW_HARNESS and vim.env.GW_HARNESS ~= "" then
+    return vim.env.GW_HARNESS
+  end
   local path = vim.env.GW_CONFIG or vim.fn.expand "~/GenAI-Workspace/.friday/config.json"
   local ok, cfg = pcall(function()
     return vim.json.decode(table.concat(vim.fn.readfile(path), "\n"))
@@ -87,6 +91,27 @@ function M.send(text)
   vim.api.nvim_set_current_win(find_win())
   vim.cmd "startinsert"
   return true
+end
+
+--- Called by `gw` at startup: once startup (incl. auto-session restore) is
+--- done, `:cd` into $GW_CD if gw passed one, then open the harness there and
+--- hand focus back to the editor.
+function M.gw_start()
+  local dir = vim.env.GW_CD
+  vim.env.GW_CD = nil -- keep it out of the harness's environment
+  vim.api.nvim_create_autocmd("VimEnter", {
+    once = true,
+    callback = function()
+      vim.schedule(function()
+        if dir and dir ~= "" then
+          vim.cmd("cd " .. vim.fn.fnameescape(dir))
+        end
+        M.toggle()
+        vim.cmd "stopinsert"
+        vim.cmd "wincmd p"
+      end)
+    end,
+  })
 end
 
 return M
