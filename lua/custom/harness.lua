@@ -38,7 +38,25 @@ local function open_win()
   vim.wo.winfixwidth = true
 end
 
+-- Tell the harness which nvim it is connected to: `@nvim_server` on this tmux
+-- pane. The hub's `scripts/gw-open` reads it when $NVIM isn't inherited (e.g.
+-- an agent's background shell), and VimLeavePre clears it again.
+local function advertise()
+  local pane = vim.env.TMUX_PANE
+  if not pane or vim.v.servername == "" then
+    return
+  end
+  vim.system { "tmux", "set-option", "-p", "-t", pane, "@nvim_server", vim.v.servername }
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    once = true,
+    callback = function()
+      vim.system({ "tmux", "set-option", "-pu", "-t", pane, "@nvim_server" }):wait()
+    end,
+  })
+end
+
 local function start()
+  advertise()
   open_win()
   -- A fresh buffer: the split still shows the file we came from, and
   -- `term = true` turns whatever buffer is current into the terminal.
@@ -112,6 +130,36 @@ function M.gw_start()
       end)
     end,
   })
+end
+
+--- Open `path` in this tab's editor window -- never the harness terminal,
+--- NvimTree or a float. Called over RPC by the hub's `scripts/gw-open`.
+function M.open(path)
+  local function is_editor(win)
+    return vim.api.nvim_win_get_config(win).relative == ""
+      and vim.bo[vim.api.nvim_win_get_buf(win)].buftype == ""
+  end
+  local target
+  for _, win in ipairs { vim.api.nvim_get_current_win(), unpack(vim.api.nvim_tabpage_list_wins(0)) } do
+    if is_editor(win) then
+      target = win
+      break
+    end
+  end
+  vim.cmd "stopinsert"
+  if target then
+    vim.api.nvim_set_current_win(target)
+  else
+    vim.cmd "leftabove vnew" -- only special windows: give the file its own split
+  end
+  -- shortmess A: skip the swap-file prompt, which would block the RPC caller.
+  local shm = vim.o.shortmess
+  vim.o.shortmess = shm .. "A"
+  local ok, err = pcall(vim.cmd.edit, vim.fn.fnameescape(path))
+  vim.o.shortmess = shm
+  if not ok then
+    error(err)
+  end
 end
 
 return M
