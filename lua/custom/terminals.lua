@@ -208,7 +208,7 @@ end
 -- "half" | "full" | nil
 local size_state = nil
 
-local function horizontal_win()
+local function horizontal_term()
   local ok, nvterm = pcall(require, "nvterm.terminal")
   if not ok then
     return nil
@@ -221,9 +221,18 @@ local function horizontal_win()
       and vim.api.nvim_win_is_valid(term.win)
       and vim.api.nvim_win_get_buf(term.win) == term.buf
     then
-      return term.win
+      return term
     end
   end
+end
+
+local function horizontal_win()
+  local term = horizontal_term()
+  return term and term.win
+end
+
+local function is_float(win)
+  return vim.api.nvim_win_get_config(win).relative ~= ""
 end
 
 local function usable_height()
@@ -242,15 +251,53 @@ function M.toggle()
   require("nvterm.terminal").toggle "horizontal"
 end
 
+-- Full height is a float, not a maximized split: `wincmd _` still leaves the
+-- editor its 'winminheight' line plus a separator row above the terminal. The
+-- float covers everything between the tabline and the global statusline, in the
+-- split's columns, so the tree stays visible. nvterm's term.win is pointed at
+-- it, so nvterm's own hide closes it like the split.
+local function float_geometry(col, width)
+  local tabline = vim.o.showtabline == 2 or (vim.o.showtabline == 1 and #vim.api.nvim_list_tabpages() > 1)
+  local top = tabline and 1 or 0
+  return {
+    relative = "editor",
+    row = top,
+    col = col,
+    width = width,
+    height = usable_height() - top,
+    zindex = 10, -- under pickers, dialogs and other floats
+  }
+end
+
+local function maximize(term)
+  local split = term.win
+  local col = vim.api.nvim_win_get_position(split)[2]
+  local float = vim.api.nvim_open_win(term.buf, true, float_geometry(col, vim.api.nvim_win_get_width(split)))
+  vim.wo[float].winhighlight = vim.wo[split].winhighlight
+  vim.wo[float].cursorline = false
+  vim.wo[float].number = false
+  vim.wo[float].relativenumber = false
+  vim.api.nvim_win_close(split, false)
+  term.win = float
+  vim.cmd "startinsert"
+end
+
+local function open_half()
+  M.toggle()
+  vim.cmd "wincmd ="
+  size_state = "half"
+end
+
 --- Open at half height; if half, hide; if full, shrink to half.
 function M.toggle_half()
-  local win = horizontal_win()
-  if not win then
-    M.toggle()
-    vim.cmd "wincmd ="
-    size_state = "half"
-  elseif size_state == "full" or looks_full(win) then
-    vim.api.nvim_win_set_height(win, math.floor(usable_height() * 0.5))
+  local term = horizontal_term()
+  if not term then
+    open_half()
+  elseif is_float(term.win) then
+    require("nvterm.terminal").hide_term(term)
+    open_half()
+  elseif size_state == "full" or looks_full(term.win) then
+    vim.api.nvim_win_set_height(term.win, math.floor(usable_height() * 0.5))
     size_state = "half"
   else
     M.toggle()
@@ -260,25 +307,63 @@ end
 
 --- Open at full height; if full, hide; if half, expand to full.
 function M.toggle_full()
-  local win = horizontal_win()
-  if not win then
-    M.toggle()
-    vim.cmd "wincmd _"
-    size_state = "full"
-  elseif size_state == "half" or not looks_full(win) then
-    vim.api.nvim_set_current_win(win)
-    vim.cmd "wincmd _"
-    size_state = "full"
-  else
+  local term = horizontal_term()
+  if term and is_float(term.win) then
     M.toggle()
     size_state = nil
+    return
+  end
+  if not term then
+    M.toggle()
+    term = horizontal_term()
+  end
+  if term then
+    maximize(term)
+    size_state = "full"
   end
 end
+
+-- Leaving the full float for a real window (C-w k/p, a click) would land in an
+-- editor hidden under it, so drop back to half height there. Floats (pickers,
+-- dialogs) don't count. Resizing the editor refits the float.
+local group = vim.api.nvim_create_augroup("custom_full_terminal", { clear = true })
+
+vim.api.nvim_create_autocmd("WinEnter", {
+  group = group,
+  callback = function()
+    local term = horizontal_term()
+    local cur = vim.api.nvim_get_current_win()
+    if not term or not is_float(term.win) or cur == term.win or is_float(cur) then
+      return
+    end
+    require("nvterm.terminal").hide_term(term)
+    vim.schedule(function()
+      M.toggle()
+      vim.cmd "wincmd ="
+      vim.cmd "stopinsert"
+      size_state = "half"
+      if vim.api.nvim_win_is_valid(cur) then
+        vim.api.nvim_set_current_win(cur)
+      end
+    end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimResized", {
+  group = group,
+  callback = function()
+    local term = horizontal_term()
+    if term and is_float(term.win) then
+      local cfg = vim.api.nvim_win_get_config(term.win)
+      vim.api.nvim_win_set_config(term.win, float_geometry(cfg.col, math.min(cfg.width, vim.o.columns - cfg.col)))
+    end
+  end,
+})
 
 --- Grow (positive) or shrink (negative) the bottom terminal, never below 5 lines.
 function M.resize(delta)
   local win = horizontal_win()
-  if win then
+  if win and not is_float(win) then
     vim.api.nvim_win_set_height(win, math.max(5, vim.api.nvim_win_get_height(win) + delta))
   end
 end

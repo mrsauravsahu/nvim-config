@@ -159,3 +159,10 @@ for _, key in ipairs { "h", "j", "k", "l", "w", "p" } do
   map("t", "<C-w>" .. key, "<cmd>wincmd " .. key .. "<cr>",
     { silent = true, noremap = true, desc = "Window " .. key .. " from terminal" })
 end
+
+-- :bd closes the buffer but keeps the window (logic in custom/buffers.lua), so
+-- NvimTree survives closing the last file. A typed `bd` expands to `Bd`.
+vim.api.nvim_create_user_command("Bd", function(opts)
+  require("custom.buffers").delete(opts.args, opts.bang)
+end, { bang = true, nargs = "?", complete = "buffer", desc = "Close buffer, keep window" })
+vim.cmd [[cnoreabbrev <expr> bd getcmdtype() == ':' && getcmdline() == 'bd' ? 'Bd' : 'bd']]
