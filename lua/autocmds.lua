@@ -35,6 +35,31 @@ vim.api.nvim_create_autocmd({ "TermOpen", "BufWinEnter" }, {
   end,
 })
 
+-- :bd on the last file leaves an empty [No Name] buffer; show NvDash there
+-- instead. Scheduled so the deleted buffer is gone from the list by then.
+vim.api.nvim_create_autocmd("BufDelete", {
+  desc = "Open NvDash when the last file buffer is closed",
+  callback = function(ev)
+    if not vim.bo[ev.buf].buflisted or vim.api.nvim_buf_get_name(ev.buf) == "" then
+      return
+    end
+    vim.schedule(function()
+      if vim.v.exiting ~= vim.NIL then
+        return
+      end
+      for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.bo[buf].buflisted and vim.api.nvim_buf_get_name(buf) ~= "" then
+          return
+        end
+      end
+      require("custom.terminals").focus_editor_win()
+      if vim.bo.buftype ~= "terminal" then
+        require("nvchad.nvdash").open()
+      end
+    end)
+  end,
+})
+
 vim.api.nvim_create_autocmd("QuitPre", {
   desc = "Close nvterm terminals before quitting",
   callback = function()

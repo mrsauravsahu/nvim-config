@@ -8,7 +8,8 @@ local state = { buf = nil, job = nil }
 
 -- Same source of truth as `gw`: $GW_HARNESS (gw's resolved choice, incl. its
 -- `gw <dir> <harness>` override), else $GW_CONFIG, else the hub's
--- .friday/config.json. Falls back to gw's built-in default.
+-- .friday/config.json (harnessTemplateCommand, then harness), with {{hub}}
+-- expanded the way gw does. Falls back to gw's built-in default.
 function M.command()
   if vim.env.GW_HARNESS and vim.env.GW_HARNESS ~= "" then
     return vim.env.GW_HARNESS
@@ -17,7 +18,12 @@ function M.command()
   local ok, cfg = pcall(function()
     return vim.json.decode(table.concat(vim.fn.readfile(path), "\n"))
   end)
-  return ok and type(cfg) == "table" and cfg.harness or "claude agents"
+  local cmd = ok and type(cfg) == "table" and (cfg.harnessTemplateCommand or cfg.harness) or "claude agents"
+  -- <hub>/.friday/config.json -> <hub>
+  local hub = vim.fn.shellescape(vim.fn.fnamemodify(path, ":p:h:h"))
+  return (cmd:gsub("{{hub}}", function()
+    return hub
+  end))
 end
 
 local function find_win()
